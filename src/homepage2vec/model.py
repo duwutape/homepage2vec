@@ -4,10 +4,10 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 import numpy as np
-from homepage2vec.model_loader import get_model_path
-from homepage2vec.textual_extractor import TextualExtractor
-from homepage2vec.visual_extractor import VisualExtractor
-from homepage2vec.data_collection import access_website, take_screenshot
+from src.homepage2vec.model_loader import get_model_path
+from src.homepage2vec.textual_extractor import TextualExtractor
+from src.homepage2vec.visual_extractor import VisualExtractor
+from src.homepage2vec.data_collection import access_website, take_screenshot
 import uuid
 import tempfile
 import os
