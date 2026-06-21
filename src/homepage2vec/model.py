@@ -71,6 +71,21 @@ class WebsiteClassifier:
         with torch.no_grad():
             self.model.eval()
             return self.model.forward(x)
+        
+    def get_scores_batch(self, features):
+        results = []
+        with torch.no_grad():
+            self.model.eval()
+            for feature in features:
+                scores, embeddings = self.model.forward(feature)
+                result = []
+                result.append(scores.tolist())
+                result.append(embeddings.tolist())
+                results.append(result)
+            return results
+
+
+
 
     def fetch_website(self, url):
         logging.debug("Fetching website: {}".format(url))
@@ -105,6 +120,18 @@ class WebsiteClassifier:
         scores, embeddings = self.get_scores(input_features)
         return dict(zip(self.classes, torch.sigmoid(scores).tolist())), embeddings.tolist()
 
+
+    def predict_batch(self, websites):
+        features = []
+        for website in websites:
+            try:
+                website.features = self.get_features(website.url, website.html, website.screenshot_path)
+                all_features = self.concatenate_features(website)
+                input_features = torch.FloatTensor(all_features)
+                features.append(input_features)
+            except Exception as e:
+                print("Error with "+website.url+": "+str(e))
+        return self.get_scores_batch(features)
 
     def concatenate_features(self, w):
         """
